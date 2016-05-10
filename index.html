@@ -1,0 +1,494 @@
+
+
+
+
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+	<title>FileNode Configurations</title>
+	<meta name="viewport" content="width=device-width" />
+	<link href="./resources/bootstrap/dist/css/bootstrap.css" type="text/css" rel="stylesheet" />
+	<link href="./resources/bootstrap/dist/css/_all-skins.min.css" type="text/css" rel="stylesheet" />
+	<link href="./resources/bootstrap/dist/css/icheck.css" type="text/css" rel="stylesheet" />
+	<link href="./resources/bootstrap/dist/css/sr.min.css" type="text/css" rel="stylesheet" />
+	<link href="./resources/font-awesome/css/font-awesome.css" type="text/css" rel="stylesheet" />
+	<script src="./resources/jquery/dist/jquery.js"></script>
+	<script src="./resources/jquery-ui/jquery-ui.js"></script>
+	<script src="./resources/icheck/icheck.js"></script>
+	<link rel="stylesheet" href="./resources/jquery-ui/themes/cupertino/jquery-ui.css" />
+	<script src="./resources/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+	<script src="./resources/jquery-cron.js"></script>
+	<script src="./resources/angular.js"></script>
+	<script src="./resources/lib.js"></script>
+	<script src="./resources/ui.js"></script>
+	<script src="./resources/angular-resource.js"></script>
+	<script src="./resources/ui-bootstrap-tpls-0.11.0.js"></script>  
+	<link rel="stylesheet" href="./resources/angularjs-datetime-picker.css" />
+  	<script src="./resources/angularjs-datetime-picker.js"></script>
+  	<script src="./resources/angular/angular-animate.js" type="text/javascript"></script>
+	<script src="./resources/angular/angular-aria.js" type="text/javascript"></script>
+	<link  href="./resources/angular/angular-material.css" rel="stylesheet" type="text/css"/>
+	<script src="./resources/angular/angular-material.js" type="text/javascript"></script>
+	<script src="./resources/angular/angular-messages.js" type="text/javascript"></script>
+	<script src="./resources/angular/angular-route.js" type="text/javascript"></script>
+	<link  href="./resources/angular/docs.css" rel="stylesheet" type="text/css"/>
+	<script src="./resources/angular/svg-assets-cache.js" type="text/javascript"></script>
+	<link href="./resources/angular/angular-cron-jobs.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="./resources/angular/angular-cron-jobs.js"></script>
+	<script src="./resources/moment.js"></script>
+	<link rel="stylesheet" href="./resources/angular/selectize.css ">
+	<script type="text/javascript" src="./resources/angular/selectize.js"></script>
+	<script type="text/javascript" src="./resources/angular/angular-selectize.js"></script>
+	  	
+	<style>
+	.has-error{
+		border: 1px solid #d73925;
+		box-shadow: 0 0 3px #d73925;
+	}
+	 .input-xs {
+    	height: 22px;
+    	padding: 2px 5px;
+    	font-size: 12px;
+    	border-radius: 0px !important;
+	}
+	body{
+		margin:10px 0;
+		overflow: auto;
+	}
+	.help-block{
+		color: red;
+		text-align: center;
+		font-size:10px;
+	}
+	tbody{
+	border-top: 0px !important;}
+	.pagination {
+    	margin: 0px 0 !important;
+	}
+	.pagination-sm > li > a, .pagination-sm > li > span {
+    	padding: 7px 10px !important;
+	}
+	.animate-if {
+  background:white;
+}
+
+.animate-if.ng-enter, .animate-if.ng-leave {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.animate-if.ng-enter,
+.animate-if.ng-leave.ng-leave-active {
+  opacity:0;
+}
+
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+.op{
+	border: 1px solid #ddd;
+	font-size: 11px;
+	padding: 10px;
+}
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+
+
+.tooltip-inner {
+    max-width: 420px;
+    width: 420px; 
+}
+
+	</style>
+	<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
+</script>
+</head>
+<body>
+	<div id="generic_modal" class="modal animated slideInDown">
+    	<div class="modal-dialog">
+        	<div class="modal-content">
+            	<div class="modal-header">
+                	<h4 class="modal-title" id="mdatatitle"></h4>
+                </div>
+                <div class="modal-body" id="mdata"></div>
+                <div class="modal-footer"></div>
+            </div>
+       </div>
+	</div>
+     
+	<div class="container">
+		<div class="row">
+
+		
+
+<div ng-app="mainApp">
+
+	<div class="form-horizontal" role="form" name="urlForm" ng-form>
+		<div class="form-group">
+			<label for="1" class="col-sm-2 control-label">File Node</label>
+			<div class="col-sm-4">
+				<select ng-model="filenode" class="form-control" ng-init="filetype='read'">
+	        		<option value="read">File Read</option><option value="write">File Write</option>
+	    		</select>
+			</div>
+		</div>
+	</div>
+		
+	<div ng-view></div>
+
+</div>
+
+<script>
+	(function() {
+		var mainApp = angular.module("mainApp", ['angular-cron-jobs','selectize', 'ngMaterial', 'ngRoute', 'ui.bootstrap', 'ngResource','angularjs-datetime-picker' ]);
+
+
+		mainApp.directive('loading',function($http){
+	        return {
+	            restrict: 'A',
+	            link: function (scope, elm, attrs) {
+	                scope.isLoading = function () {
+	                    return $http.pendingRequests.length > 0;
+	                };
+
+	                scope.$watch(scope.isLoading, function (v) {
+	                    if(v){
+	                        elm.show();
+	                    }else{
+	                        elm.hide();
+	                    }
+	                });
+	            }
+	        };
+
+	    });
+
+		mainApp.factory("genericServices", function() {                                                                                                                                                   
+		     return {                                                                                                                                                                                                              
+		       hi1: function(scope) {   
+			         console.log("inside hello1");
+			         
+		       },
+		       tooltip: function (){
+			       console.log(JSON.stringify(this));
+			       $('[data-toggle="tooltip"]').tooltip();
+			   }
+		     }
+		 });
+
+		var basejson = { 
+                file: { 
+                	type : "", 
+                	sorting: false, 
+                    sorting_field: [], 
+                    istransform: false, 
+                    transform_field: [], 
+                    transform: {}, 
+                    skipfirstrow: false, 
+                    removedups: false, removedups_field: [], filter: false, 
+                    excludecolumn: false,
+                    exclude_field:[],
+                    move: {
+                        state: true,
+                        success: {
+                          path: "",
+                          appenddatetime: true
+                        },
+                        error: {
+                          path: "",
+                          appenddatetime: true
+                        }
+                    },
+                },
+                xls: {},
+                csv: {},
+                xml: { field: [] },
+                javabean : {field: []},
+                fw: { hr:{field: [],"ignore": false}, tr:{field: [],"ignore": false}, td:{field: [],"ignore": false}, lr:{field: [],"ignore": false}, nonuniform : false },
+        };
+
+		var fileextdc = {'FIXWIDTH':'fw','XLS':'xls','DELIMITED':'csv','XML':'xml'};
+	    var fileextkeys = [];for(k in fileextdc){fileextkeys.push(k)}
+
+	    var datedc = {'FIXWIDTH':'fw','XLS':'xls','DELIMITED':'csv','XML':'xml'};
+	    var datedckeys = [];for(k in datedc){datedckeys.push(k)}
+
+
+	    var ddd= [{'name':'To Double','val':'double'},
+			{'name':'To Float','val':'float'},
+			{'name':'To Integer','val':'int'},
+			{'name':'To Character','val':'char'},
+			{'name':'To Byte','val':'byte'},
+			{'name':'To Long','val':'long'},
+			{'name':'To Short','val':'short'},
+			{'name':'To Boolean','val':'boolean'},
+			{'name':'To Date YYYY-dd-MM','val':'date-1'},
+			{'name':'To Date dd/MM/yyyy','val':'date-2'},
+			{'name':'To Date MM/dd/yyyy','val':'date-3'},
+			{'name':'To DateTime YYYY-dd-MM-HH-mm-ss','val':'datetime-1'}];
+        
+		mainApp.config(function($routeProvider) {
+			$routeProvider
+				.when('/', {
+					templateUrl : 'ReadNode.jsp',
+					controller  : 'ReadController'
+				})
+				.when('/read', {
+					templateUrl : 'ReadNode.jsp',
+					controller  : 'ReadController'
+				})
+				.when('/write', {
+					templateUrl : 'WriteNode.jsp',
+					controller  : 'WriteController'
+				});
+		});
+
+		mainApp.controller("WriteController", function($scope,$http,$location,$route,genericServices) {
+			$scope.task = basejson;
+			$scope.genericServices = genericServices;
+
+			$scope.$watch('filenode', function (term) {
+				 $scope.task = angular.copy(basejson);
+				 
+				if(term == 'write'){
+					$location.path('write');
+				}else{
+					$location.path('read');
+				}
+        	});
+
+			    
+				$scope.fileextOptions = $.map(fileextkeys, function(ele) { return {'value':ele ,'text':ele }});
+				$scope.fileextConfig = { create: false, maxItems: 1,}
+
+				//$scope.task.file.prefixexpression;
+				$scope.prefixexpressionOptions = 
+					$.map([
+							'NONE',
+							'dd-MM-YYYY',
+							'dd.MM.YYYY',
+							'dd-MM-YY',
+							'dd-MM-YY-hh-mm-ss',
+							'yyyy-MM-dd_HH:mm:ss.SSS'
+					], function(ele) { return {'value':ele ,'text':ele }});
+
+				$scope.delimitedOptions = $.map([',', '|', ':'], function(ele) { return {'value':ele ,'text':ele }});
+
+				$scope.prefixexpressionConfig = { create: true, maxItems: 1,onChange: function(value) { console.log(value);}}
+				
+				$scope.$watchGroup(['task.file.prefix', 'task.file.prefixexpression','task.file.type'], function (term) {
+					$scope.task.file.extention = fileextdc[$scope.task.file.type];
+					var y = moment().format($scope.task.file.prefixexpression);
+					//$scope.task.file.example = $scope.task.file.prefix + y + '.' + $scope.task.file.extention;
+	        	});
+
+				$scope.$watch('task.file.type', function (term) {
+					if(term == 'FIXWIDTH'){
+						$scope.task.csv = {};
+						$scope.task.xml = { field: [] }
+					}
+	        	});	
+
+
+
+
+				$scope.reset = function() { $scope.task = basejson; };
+			    
+				$scope.save = function() {
+		            var xsrf = $.param({json: JSON.stringify($scope.task)});
+		            $http({
+		                method: 'POST',
+		                url: 'api/filenodewrite',
+		                data: xsrf,
+		                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		            }).success(function (data, status, headers) {
+		                console.log(data);
+		            })
+		            .error(function (data, status, header, config) {
+		                alert("Data: " + data, status , header , config);
+		            }); 
+				};
+
+				$scope.range = function(n) {
+			        return new Array(n);
+			    };
+
+			    $scope.$watch('task.file.prefix', function (term) {
+	                term = term || '';
+	                term = term.replace(/\\/g,'/');
+	                $scope.task.file.prefix = term;
+	        	});
+
+			    
+		});
+
+
+
+
+
+
+
+		
+		
+		mainApp.controller("ReadController", function($scope,$http,$location, $route, genericServices) {
+			$scope.genericServices = genericServices;
+			$scope.$watch('filenode', function (term) {
+				$scope.task = angular.copy(basejson);
+				if(term == 'write'){
+					$location.path('write');
+				}else{
+					$location.path('read');
+				}
+        	});
+			
+			
+
+            $scope.task = basejson;
+			$scope.reset = function() { $scope.task = basejson; };
+			    
+			$scope.save = function() {
+	            var xsrf = $.param({json: JSON.stringify($scope.task)});
+	            $http({
+	                method: 'POST',
+	                url: 'api/filenode',
+	                data: xsrf,
+	                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+	            }).success(function (data, status, headers) {
+	                console.log(data);
+	            })
+	            .error(function (data, status, header, config) {
+	                alert("Data: " + data, status , header , config);
+	            }); 
+			};
+
+			$scope.range = function(n) {
+		        return new Array(n);
+		    };
+
+			$scope.task.fileext;
+			$scope.fileextOptions = $.map(fileextkeys, function(ele) { return {'value':ele ,'text':ele }});
+			$scope.fileextConfig = { create: false, maxItems: 1,}
+
+			$scope.fileextOptions = $.map(fileextkeys, function(ele) { return {'value':ele ,'text':ele }});
+			
+			$scope.task.file.prefixexpression;
+			$scope.prefixexpressionOptions = $.map([
+						'^([a-zA-Z0-9_-]){3,15}$',
+						'^SOMENAME{5}',
+						'DD-MM-YYYY',
+						'DD.MM.YYYY',
+						'DD-MM-YY',
+				], function(ele) { return {'value':ele ,'text':ele }});
+
+			$scope.delimitedOptions = $.map([',', '|', ':'], function(ele) { return {'value':ele ,'text':ele }});
+
+			$scope.prefixexpressionConfig = { create: true, maxItems: 1,onChange: function(value) { console.log(value);}}
+			
+			$scope.$watchGroup(['task.file.prefix', 'task.file.prefixexpression','task.file.type'], function (term) {
+				$scope.task.file.extention = fileextdc[$scope.task.file.type];
+				var y = moment().format($scope.task.file.prefixexpression);
+				//$scope.task.file.example = $scope.task.file.prefix + y + '.' + $scope.task.file.extention;
+        	});
+
+
+
+
+			
+
+			$scope.$watch('task.file.type', function (term) {
+				if(term == 'FIXWIDTH'){
+					$scope.task.csv = {};
+					$scope.task.xml = { field: [] }
+				}
+
+				/* var extention = $scope.task.file.extention || 'xml';
+				var control = $('.prefixexpressionOptions')[0].selectize;
+				control.clearOptions();
+				console.log(control);
+				control.addOption({
+					text: 'DD-MM-YYYY.' + extention, value: 'DD-MM-YYYY.' + extention
+				}); */
+				
+        	});
+
+			$scope.$watch('task.file.extension', function (term) {
+				var y = moment().format($scope.task.file.prefixexpression);
+
+
+				
+				
+        	});
+
+            $scope.changeEndTagXML = function(index) {
+                if($scope.task.xml.field[index].type == 'element') $scope.task.xml.field[index].breakrecord = $scope.task.xml.field[index].path;
+            };
+
+            $scope.changeTransform = function(){
+				if($scope.task.file.istransform || $scope.task.fw.nonuniform){
+					$scope.task.file.transform_field = [];
+					$scope.task.file.transform.length = 1;
+				}
+            };
+
+            $scope.$watch('task.file.prefix', function (term) {
+                term = term || '';
+                term = term.replace(/\\/g,'/');
+                $scope.task.file.prefix = term;
+        	});
+
+            $scope.$watch('task.file.move.success.path', function (term) {
+                term = term || '';
+                term = term.replace(/\\/g,'/');
+                $scope.task.file.move.success.path = term;
+        	});
+
+            $scope.$watch('task.file.move.error.path', function (term) {
+                term = term || '';
+                term = term.replace(/\\/g,'/');
+                $scope.task.file.move.error.path = term;
+        	});
+
+		})
+	    .directive('selectOnClick', function ($window) {
+            return {
+                link: function (scope, element) {
+                    element.on('click', function () {
+                        var selection = $window.getSelection();        
+                        var range = document.createRange();
+                        range.selectNodeContents(element[0]);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    });
+                }
+            }
+        }) 
+	    .filter('trim', [function() {
+		    return function(string) {
+        		if (!angular.isString(string)) {
+            		return string;
+        		}
+        	return string.replace(/[\s]/g, '');
+    		};
+		}])
+		.filter('prettyJSON', function () {
+			function prettyPrintJson(json) {
+      			return JSON ? JSON.stringify(json, null, '  ') : 'your browser doesnt support JSON so cant pretty print';
+    		}
+    		return prettyPrintJson;
+		})
+	    ;
+	}());
+</script>
+
+</body>
+</html>
