@@ -14,3 +14,6 @@ This project aims to provide file activity node to BPM projects.
 * Apply Filter when read data
 * Apply sorting of data
 * Field or Column transformation.
+
+## Frontend UI
+<img src="resources/images/image.png">
