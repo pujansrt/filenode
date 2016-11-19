@@ -1,6 +1,6 @@
 # Filenode
 
-This project aims to provide file activity node to BPM projects. 
+This project aims to provide file activity node to BPM projects. This repo only provides frontend UI.
 
 
 ## Features
